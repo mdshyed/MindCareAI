@@ -1,0 +1,13 @@
+const express = require('express');
+const router = express.Router();
+const { bookAppointment, getMyAppointments, getCounselorAppointments, updateAppointmentStatus } = require('../controllers/appointmentController');
+const { protect, restrictTo } = require('../middleware/authMiddleware');
+const validate = require('../middleware/validate');
+const { bookAppointmentSchema, updateStatusSchema } = require('../validation/appointmentSchemas');
+
+router.post('/book', protect, restrictTo('student'), validate(bookAppointmentSchema), bookAppointment);
+router.get('/my', protect, restrictTo('student'), getMyAppointments);
+router.get('/counselor', protect, restrictTo('counselor'), getCounselorAppointments);
+router.patch('/:id/status', protect, restrictTo('counselor'), validate(updateStatusSchema), updateAppointmentStatus);
+
+module.exports = router;
